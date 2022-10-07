@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VacationRental.Api.Models;
+using VacationRental.Api.Services;
+using VacationRental.Domain;
 
 namespace VacationRental.Api.Controllers
 {
@@ -9,35 +13,39 @@ namespace VacationRental.Api.Controllers
     [ApiController]
     public class RentalsController : ControllerBase
     {
-        private readonly IDictionary<int, RentalViewModel> _rentals;
-
-        public RentalsController(IDictionary<int, RentalViewModel> rentals)
+        private readonly IRentalService _rentalService;
+        private readonly IMapper _mapper;
+        public RentalsController(IRentalService rentalService, IMapper mapper)
         {
-            _rentals = rentals;
+            _rentalService = rentalService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [Route("{rentalId:int}")]
-        public RentalViewModel Get(int rentalId)
+        public async Task<RentalViewModel> Get(int rentalId)
         {
-            if (!_rentals.ContainsKey(rentalId))
-                throw new ApplicationException("Rental not found");
-
-            return _rentals[rentalId];
+            var rental = await _rentalService.GetById(rentalId);
+           
+            return _mapper.Map<RentalViewModel>(rental);
         }
 
         [HttpPost]
-        public ResourceIdViewModel Post(RentalBindingModel model)
+        public async Task<ResourceIdViewModel> Post(RentalBindingModel model)
         {
-            var key = new ResourceIdViewModel { Id = _rentals.Keys.Count + 1 };
+            var newRental = _mapper.Map<Rental>(model);
+           
+            var result = await _rentalService.CreateRental(newRental);
 
-            _rentals.Add(key.Id, new RentalViewModel
-            {
-                Id = key.Id,
-                Units = model.Units
-            });
+            return new ResourceIdViewModel { Id = result.RentalId};
+        }
 
-            return key;
+        [HttpPut("id")]
+        public async Task<ResourceIdViewModel> Put(int id, RentalBindingModel model)
+        {
+            var resultId = await _rentalService.UpdateRental(id, model);
+
+            return new ResourceIdViewModel { Id = resultId };
         }
     }
 }
