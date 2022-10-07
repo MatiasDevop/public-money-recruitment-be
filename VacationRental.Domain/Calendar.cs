@@ -11,7 +11,6 @@ namespace VacationRental.Domain
         public int CalendarId { get; set; }
         public int RentalId { get; set; }
         public virtual Rental Rental { get; set; }
-
         public virtual ICollection<CalendarDate> Dates { get; set; }
     }
 }

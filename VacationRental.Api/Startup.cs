@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using VacationRental.Api.Models;
+using VacationRental.Api.Services;
 using VacationRental.Infrastructure;
 
 namespace VacationRental.Api
@@ -32,8 +33,10 @@ namespace VacationRental.Api
             
             services.AddSwaggerGen();
 
-            services.AddSingleton<IDictionary<int, RentalViewModel>>(new Dictionary<int, RentalViewModel>());
-            services.AddSingleton<IDictionary<int, BookingViewModel>>(new Dictionary<int, BookingViewModel>());
+            services.AddScoped<IRentalService, RentalService>();
+            services.AddScoped<ICalendarService, CalendarService>();
+            services.AddScoped<IBookingService, BookingService>();
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

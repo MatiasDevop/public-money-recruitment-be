@@ -14,5 +14,8 @@ namespace VacationRental.Api.Models
 
         private DateTime _startIgnoreTime;
         public int Nights { get; set; }
+
+        public int Unit { get; set; }
+        public int PreparationTime { get; set; }
     }
 }

@@ -12,8 +12,8 @@ using VacationRental.Infrastructure;
 namespace VacationRental.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221003204739_InitialData")]
-    partial class InitialData
+    [Migration("20221005092623_adding_preparationTimeInDays_rental")]
+    partial class adding_preparationTimeInDays_rental
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,6 +51,9 @@ namespace VacationRental.Infrastructure.Migrations
 
                     b.HasIndex("RentalId");
 
+                    b.HasIndex("BookingId", "RentalId")
+                        .IsUnique();
+
                     b.ToTable("Bookings");
                 });
 
@@ -61,6 +64,9 @@ namespace VacationRental.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RentalId"), 1L, 1);
+
+                    b.Property<int>("PreparationTimeInDays")
+                        .HasColumnType("int");
 
                     b.Property<int>("Units")
                         .HasColumnType("int");
@@ -75,7 +81,7 @@ namespace VacationRental.Infrastructure.Migrations
                     b.HasOne("VacationRental.Domain.Rental", "Rental")
                         .WithMany()
                         .HasForeignKey("RentalId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Rental");

@@ -42,8 +42,14 @@ namespace VacationRental.Infrastructure.Migrations
                         column: x => x.RentalId,
                         principalTable: "Rentals",
                         principalColumn: "RentalId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_BookingId_RentalId",
+                table: "Bookings",
+                columns: new[] { "BookingId", "RentalId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_RentalId",

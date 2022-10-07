@@ -11,5 +11,6 @@ namespace VacationRental.Domain
         public int CalendarDateId { get; set; }
         public DateTime Date { get; set; }
         public virtual ICollection<Booking> Bookings { get; set; }
+        public virtual ICollection<Booking> PreparationTimes { get; set; }
     }
 }
